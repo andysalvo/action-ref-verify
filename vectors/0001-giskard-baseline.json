@@ -1,0 +1,15 @@
+{
+  "name": "giskard-baseline",
+  "implementation": "argentum-core",
+  "version": "77a10ff",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "action_type": "oracle.signal",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "scope": "BTC",
+    "timestamp": "2025-05-18T11:40:31.000Z"
+  },
+  "notes": "First independent verification of action-ref-v1. Source: x402-foundation/x402#2332"
+}

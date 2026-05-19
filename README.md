@@ -8,7 +8,7 @@ Re-derives `action_ref` using **JCS (RFC 8785) + SHA-256** and verifies it match
 
 ```bash
 npm install
-node verify.mjs fixtures/nexus-canonical.json
+node verify.mjs vectors/0001-giskard-baseline.json
 ```
 
 Or pipe:
@@ -51,11 +51,13 @@ Where JCS is [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.or
 
 Returns `PASS` or `FAIL` with detailed check results.
 
-## Conformance fixtures
+## Conformance vectors
 
-| Fixture | Source | Status |
-|---------|--------|--------|
-| `fixtures/nexus-canonical.json` | [argentum-core@77a10ff](https://github.com/giskard09/argentum-core/blob/main/docs/spec/action-ref.md) | PASS |
+| Vector | Implementation | Source | Status |
+|--------|---------------|--------|--------|
+| `vectors/0001-giskard-baseline.json` | argentum-core | [77a10ff](https://github.com/giskard09/argentum-core/blob/main/docs/spec/action-ref.md) | PASS |
+
+See [CONFORMANCE_INTAKE.md](CONFORMANCE_INTAKE.md) for submission format and publication policy.
 
 ## Built by
 
