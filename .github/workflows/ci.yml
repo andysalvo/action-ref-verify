@@ -1,0 +1,38 @@
+name: Conformance CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: node selftest.mjs
+      - run: node verify.mjs vectors/0001-giskard-baseline.json
+
+  vendor-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify vendored canonicalize integrity
+        run: |
+          EXPECTED="c0fd652bd174455567dcbbbab0f306fe5d40a9fb13b0f184b46aca083b29546e"
+          # Strip the vendored header comments to match original source
+          ACTUAL=$(tail -n +6 vendor/canonicalize.mjs | shasum -a 256 | cut -d' ' -f1)
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "INTEGRITY FAIL: vendored canonicalize has been modified"
+            echo "  expected: $EXPECTED"
+            echo "  actual:   $ACTUAL"
+            exit 1
+          fi
+          echo "Vendor integrity: PASS"

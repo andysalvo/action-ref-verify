@@ -1,18 +1,20 @@
 {
   "name": "action-ref-verify",
-  "version": "0.1.0",
-  "description": "Draft conformance verifier for x402 action_ref settlement receipts",
+  "version": "0.2.0",
+  "description": "Conformance verifier for x402 action_ref post-settlement accountability",
   "type": "module",
   "bin": {
     "action-ref-verify": "./verify.mjs"
+  },
+  "scripts": {
+    "selftest": "node selftest.mjs",
+    "verify": "node verify.mjs",
+    "test": "node selftest.mjs && node verify.mjs vectors/0001-giskard-baseline.json"
   },
   "author": "Crest Deployment Systems LLC",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/andysalvo/action-ref-verify.git"
-  },
-  "dependencies": {
-    "canonicalize": "^3.0.0"
   }
 }

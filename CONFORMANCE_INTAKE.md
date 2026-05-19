@@ -77,6 +77,12 @@ On failure, the `DIFF` field shows the exact byte-level divergence.
 - It verifies against the spec as written at the pinned version.
 - Results identify harness version and spec version explicitly.
 
+## Disclaimer
+
+Reports describe conformance of submitted artifacts to a published spec at a point in time. They are not endorsements, audits, or warranties. This harness verifies against the spec as written at the pinned version. It does not warrant spec correctness. Passing verification does not constitute a guarantee of security, correctness, or fitness for any purpose.
+
+Do not submit vectors containing PII, production secrets, or private keys.
+
 ## Maintained by
 
 [Crest Deployment Systems](https://crestsystems.ai) -- deploying scalable intelligence.

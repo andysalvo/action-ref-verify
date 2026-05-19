@@ -12,7 +12,7 @@
 
 import { createHash } from "crypto";
 import { readFileSync } from "fs";
-import canonicalize from "canonicalize";
+import canonicalize from "./vendor/canonicalize.mjs";
 
 function deriveActionRef(preimage) {
   const { agent_id, action_type, scope, timestamp } = preimage;
