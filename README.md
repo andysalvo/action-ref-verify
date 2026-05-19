@@ -1,47 +1,61 @@
 # action-ref-verify
 
-Draft conformance verifier for x402 settlement receipt `action_ref` fields.
+Conformance verifier for x402 post-settlement `action_ref` fields.
 
-Re-derives `action_ref` from preimage fields and checks it matches the claimed hash. Context: [x402-foundation/x402#2332](https://github.com/x402-foundation/x402/issues/2332).
+Re-derives `action_ref` using **JCS (RFC 8785) + SHA-256** and verifies it matches the claimed hash. Context: [x402-foundation/x402#2332](https://github.com/x402-foundation/x402/issues/2332).
 
 ## Usage
 
 ```bash
-node verify.mjs fixture.json
+npm install
+node verify.mjs fixtures/nexus-canonical.json
 ```
 
 Or pipe:
 ```bash
-echo '{"action_ref":"abc...","preimage":{"agent_id":"x","action_type":"y","scope":"z","ts":"123"}}' | node verify.mjs
+echo '{"action_ref":"fdd7f8...","preimage":{"agent_id":"x","action_type":"y","scope":"z","timestamp":"2025-05-18T11:40:31.000Z"}}' | node verify.mjs
 ```
+
+## Canonical derivation
+
+```
+action_ref = SHA-256(JCS(preimage_object))
+```
+
+Where JCS is [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785):
+- Keys sorted lexicographically (alphabetical for ASCII)
+- No whitespace
+- Timestamps are RFC 3339 UTC with 3-digit ms precision
 
 ## Fixture format
 
 ```json
 {
   "action_ref": "<SHA-256 hex>",
-  "payment_hash": "<Base tx hash>",
   "preimage": {
-    "agent_id": "service.example.com",
     "action_type": "oracle.signal",
+    "agent_id": "nexus-agent-xa12.onrender.com",
     "scope": "BTC",
-    "ts": "1747568431"
+    "timestamp": "2025-05-18T11:40:31.000Z"
   },
-  "spec": "argentum-core/action-ref-v1"
+  "payment_hash": "<Base tx hash (optional)>",
+  "spec": "x402-action-ref-jcs-sha256"
 }
 ```
 
 ## What it checks
 
-1. Re-derives `action_ref` as `SHA-256(agent_id:action_type:scope:ts)` and compares to claimed hash
-2. Verifies `payment_hash` is present
+1. Re-derives `action_ref` as `SHA-256(JCS(preimage))` and compares to claimed hash
+2. Verifies `payment_hash` is present (if provided)
 3. Verifies `spec` field is declared
 
 Returns `PASS` or `FAIL` with detailed check results.
 
-## Status
+## Conformance fixtures
 
-Draft. Canonical encoding (delimiter, casing, field order) needs alignment with the argentum-core spec.
+| Fixture | Source | Status |
+|---------|--------|--------|
+| `fixtures/nexus-canonical.json` | [argentum-core@77a10ff](https://github.com/giskard09/argentum-core/blob/main/docs/spec/action-ref.md) | PASS |
 
 ## Built by
 

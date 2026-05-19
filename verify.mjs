@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * action-ref conformance verifier (draft)
- * 
- * Independently re-derives action_ref from preimage fields
+ * action-ref conformance verifier
+ *
+ * Re-derives action_ref using JCS (RFC 8785) + SHA-256
  * and verifies it matches the claimed hash.
  *
  * Usage:
@@ -12,20 +12,21 @@
 
 import { createHash } from "crypto";
 import { readFileSync } from "fs";
+import canonicalize from "canonicalize";
 
 function deriveActionRef(preimage) {
-  const { agent_id, action_type, scope, ts } = preimage;
-  if (!agent_id || !action_type || !scope || !ts) {
-    return { error: "Missing required preimage fields: agent_id, action_type, scope, ts" };
+  const { agent_id, action_type, scope, timestamp } = preimage;
+  if (!agent_id || !action_type || !scope || !timestamp) {
+    return { error: "Missing required preimage fields: agent_id, action_type, scope, timestamp" };
   }
-  const canonical = `${agent_id}:${action_type}:${scope}:${ts}`;
-  return { hash: createHash("sha256").update(canonical).digest("hex"), canonical };
+  const obj = { action_type, agent_id, scope, timestamp };
+  const jcs = canonicalize(obj);
+  return { hash: createHash("sha256").update(jcs, "utf8").digest("hex"), canonical: jcs };
 }
 
 function verify(fixture) {
   const results = [];
 
-  // 1. Verify action_ref derivation
   if (fixture.preimage) {
     const derived = deriveActionRef(fixture.preimage);
     if (derived.error) {
@@ -39,11 +40,11 @@ function verify(fixture) {
         claimed: claimed.slice(0, 16) + "...",
         derived: derived.hash.slice(0, 16) + "...",
         canonical_input: derived.canonical,
+        method: "JCS (RFC 8785) + SHA-256",
       });
     }
   }
 
-  // 2. Verify payment_hash exists
   if (fixture.payment_hash) {
     results.push({
       check: "payment_hash_present",
@@ -54,12 +55,10 @@ function verify(fixture) {
     results.push({ check: "payment_hash_present", status: "SKIP", reason: "No payment_hash in fixture" });
   }
 
-  // 3. Verify spec field
   if (fixture.spec) {
     results.push({ check: "spec_declared", status: "PASS", spec: fixture.spec });
   }
 
-  // 4. Overall
   const failed = results.filter(r => r.status === "FAIL").length;
   const passed = results.filter(r => r.status === "PASS").length;
 
@@ -72,7 +71,6 @@ function verify(fixture) {
   };
 }
 
-// Main
 let input;
 const arg = process.argv[2];
 if (arg && arg !== "-") {
