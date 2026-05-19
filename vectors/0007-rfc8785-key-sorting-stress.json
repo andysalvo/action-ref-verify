@@ -1,0 +1,15 @@
+{
+  "name": "rfc8785-key-sorting-stress",
+  "implementation": "rfc8785-appendix-b",
+  "version": "RFC 8785",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "timestamp": "2025-05-18T11:40:31.000Z",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "scope": "BTC",
+    "action_type": "oracle.signal"
+  },
+  "notes": "Same preimage as giskard-baseline but with keys in reverse alphabetical order. RFC 8785 Section 3.2.3 requires lexicographic key sorting. JCS must produce identical canonical bytes regardless of input key order. This is the most critical RFC 8785 property for action_ref correctness."
+}

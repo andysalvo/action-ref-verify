@@ -70,6 +70,21 @@ DIFF: none
 
 On failure, the `DIFF` field shows the exact byte-level divergence.
 
+## Disputing a verdict
+
+If you believe a verdict is incorrect:
+
+1. Open an issue titled `DISPUTE: [vector-name]` with:
+   - The vector file in question
+   - Your expected result and why
+   - The harness version and commit you tested against
+   - Your reproduction steps and output
+2. We will reproduce the verdict against the cited harness commit.
+3. If the dispute reveals a harness bug, we will fix it and publish a corrected verdict.
+4. If the dispute reveals a spec ambiguity, we will document it and tag the spec author.
+5. Verdicts are never deleted. Corrected verdicts supersede previous ones with a new harness version reference.
+6. Disputes and their resolutions are public.
+
 ## What this harness does not do
 
 - It does not certify implementations.

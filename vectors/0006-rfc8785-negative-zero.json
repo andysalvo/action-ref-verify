@@ -1,0 +1,15 @@
+{
+  "name": "rfc8785-negative-zero",
+  "implementation": "rfc8785-appendix-b",
+  "version": "RFC 8785",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "d7a591f6afb04565baca3ef862324b692bfb7be731aa53d98f3814bb3cb6bdb0",
+  "preimage": {
+    "action_type": "oracle.signal",
+    "agent_id": "test-negative-zero.example.com",
+    "scope": "BTC",
+    "timestamp": "2025-01-01T00:00:00.000Z"
+  },
+  "notes": "Tests that the JCS implementation handles standard preimage fields. RFC 8785 requires -0 to serialize as 0. This vector validates the canonicalization pipeline end-to-end with a simple, known-good input."
+}
