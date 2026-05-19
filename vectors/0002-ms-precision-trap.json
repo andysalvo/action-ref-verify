@@ -1,0 +1,15 @@
+{
+  "name": "ms-precision-trap",
+  "implementation": "crest-adversarial",
+  "version": "v0.2.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "FAIL",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "action_type": "oracle.signal",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "scope": "BTC",
+    "timestamp": "2025-05-18T11:40:31Z"
+  },
+  "notes": "Timestamp drops millisecond precision (.000Z -> Z). Semantically identical time, but JCS treats strings as opaque bytes. Correct hash for this input is 999919e8b69846be116934c9ca3f72eaef6d54aac5ab17f1a6b050cae7bda197, not the baseline hash. Implementations that normalize timestamps before hashing will produce the wrong action_ref."
+}

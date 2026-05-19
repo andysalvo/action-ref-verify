@@ -1,0 +1,16 @@
+{
+  "name": "extra-field-ignored",
+  "implementation": "crest-adversarial",
+  "version": "v0.2.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "action_type": "oracle.signal",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "extra": "field",
+    "scope": "BTC",
+    "timestamp": "2025-05-18T11:40:31.000Z"
+  },
+  "notes": "Extra field in preimage object. The verifier extracts only the 4 canonical fields (action_type, agent_id, scope, timestamp) before canonicalization. Extra fields are ignored. This is the correct behavior: action_ref is computed from the canonical 4 fields, not from the full input object. Implementations that include extra fields in the JCS input will produce a DIFFERENT hash. Open question: should the spec explicitly require field extraction, or should it hash the full object? This vector tests that our verifier handles the extraction correctly."
+}

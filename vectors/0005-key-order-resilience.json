@@ -1,0 +1,15 @@
+{
+  "name": "key-order-resilience",
+  "implementation": "crest-adversarial",
+  "version": "v0.2.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "timestamp": "2025-05-18T11:40:31.000Z",
+    "scope": "BTC",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "action_type": "oracle.signal"
+  },
+  "notes": "Keys in reverse order. JCS sorts lexicographically regardless of insertion order. This MUST produce the same hash as the baseline. Implementations that hash insertion-order JSON instead of canonicalized JSON will fail this test."
+}

@@ -1,0 +1,15 @@
+{
+  "name": "trailing-whitespace",
+  "implementation": "crest-adversarial",
+  "version": "v0.2.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "FAIL",
+  "action_ref": "fdd7f810499f06be24355ca8e2bfb8c4b965cc80c838f41fa074683443d89f5a",
+  "preimage": {
+    "action_type": "oracle.signal ",
+    "agent_id": "nexus-agent-xa12.onrender.com",
+    "scope": "BTC",
+    "timestamp": "2025-05-18T11:40:31.000Z"
+  },
+  "notes": "Trailing space in action_type. JCS preserves string content exactly. Implementations that trim whitespace before canonicalization will silently produce a different hash. Correct hash for this input is 37caadb35cfdedf144827b121e004c81b471c7f22120eb372707c1814699427e."
+}
