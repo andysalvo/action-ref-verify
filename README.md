@@ -16,6 +16,18 @@ Or pipe:
 echo '{"action_ref":"fdd7f8...","preimage":{"agent_id":"x","action_type":"y","scope":"z","timestamp":"2025-05-18T11:40:31.000Z"}}' | node verify.mjs
 ```
 
+## Hosted API
+
+Submit receipts and get conformance verdicts without running the CLI:
+
+```bash
+curl -X POST https://verify.crestsystems.ai/v1/verify \
+  -H "Content-Type: application/json" \
+  -d '{"action_ref":"<sha256>","preimage":{"action_type":"...","agent_id":"...","scope":"...","timestamp":"..."}}'
+```
+
+Returns a signed verdict with a public permalink at `verify.crestsystems.ai/v1/verdict/:id`.
+
 ## Canonical derivation
 
 ```
