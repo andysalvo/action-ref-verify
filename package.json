@@ -1,0 +1,10 @@
+{
+  "name": "action-ref-verify",
+  "version": "0.1.0",
+  "description": "Draft conformance verifier for x402 action_ref settlement receipts",
+  "type": "module",
+  "bin": { "action-ref-verify": "./verify.mjs" },
+  "author": "Crest Deployment Systems LLC",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "https://github.com/andysalvo/action-ref-verify.git" }
+}
