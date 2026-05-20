@@ -1,6 +1,6 @@
 {
   "name": "action-ref-verify",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Conformance verifier for x402 action_ref post-settlement accountability",
   "type": "module",
   "bin": {

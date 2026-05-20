@@ -1,0 +1,15 @@
+{
+  "name": "field-name-load-bearing",
+  "implementation": "crest-adversarial",
+  "version": "v0.3.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "FAIL",
+  "action_ref": "10d8a38c01d8672176aa6e5209a368fde3e1831640d69e15283142b35880c2c1",
+  "preimage": {
+    "action_type": "sanctions_screen",
+    "agent_id": "did:web:agent-7.example.com",
+    "scope": "counterparty-due-diligence",
+    "timestamp": "2025-05-20T00:00:00.000Z"
+  },
+  "notes": "Same semantic instant as 0008 (1747728000000 ms = 2025-05-20T00:00:00.000Z) but using timestamp (RFC 3339 string) instead of timestamp_ms (epoch integer). JCS treats field names as opaque bytes: 'timestamp' and 'timestamp_ms' produce different canonical output and different digests. This vector MUST FAIL against the 0008 action_ref, proving the field name is load-bearing. Implementations that normalize between the two forms before hashing will produce silent interop failures."
+}

@@ -37,7 +37,13 @@ action_ref = SHA-256(JCS(preimage_object))
 Where JCS is [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785):
 - Keys sorted lexicographically (alphabetical for ASCII)
 - No whitespace
-- Timestamps are RFC 3339 UTC with 3-digit ms precision
+- Field names are opaque bytes (load-bearing in the digest)
+
+Two timestamp encodings are supported:
+- `timestamp_ms` (integer, epoch milliseconds) -- per the original #2332 preimage spec
+- `timestamp` (string, RFC 3339 UTC) -- legacy encoding from early verifier versions
+
+These produce different digests. The field name is part of the JCS canonical output. See vector 0009 for a worked proof.
 
 ## Fixture format
 
@@ -45,13 +51,13 @@ Where JCS is [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.or
 {
   "action_ref": "<SHA-256 hex>",
   "preimage": {
-    "action_type": "oracle.signal",
-    "agent_id": "nexus-agent-xa12.onrender.com",
-    "scope": "BTC",
-    "timestamp": "2025-05-18T11:40:31.000Z"
+    "action_type": "sanctions_screen",
+    "agent_id": "did:web:agent-7.example.com",
+    "scope": "counterparty-due-diligence",
+    "timestamp_ms": 1747728000000
   },
   "payment_hash": "<Base tx hash (optional)>",
-  "spec": "x402-action-ref-jcs-sha256"
+  "spec": "action-ref-v1-jcs-sha256"
 }
 ```
 
@@ -67,7 +73,15 @@ Returns `PASS` or `FAIL` with detailed check results.
 
 | Vector | Implementation | Source | Status |
 |--------|---------------|--------|--------|
-| `vectors/0001-giskard-baseline.json` | argentum-core | [77a10ff](https://github.com/giskard09/argentum-core/blob/main/docs/spec/action-ref.md) | PASS |
+| `0001-giskard-baseline` | argentum-core | [#2332](https://github.com/x402-foundation/x402/issues/2332) | PASS |
+| `0002-ms-precision-trap` | crest-adversarial | v0.2.0 | FAIL (by design) |
+| `0003-trailing-whitespace` | crest-adversarial | v0.2.0 | FAIL (by design) |
+| `0004-extra-field-ignored` | crest-adversarial | v0.2.0 | PASS |
+| `0005-key-order-resilience` | crest-adversarial | v0.2.0 | PASS |
+| `0006-rfc8785-negative-zero` | rfc8785-appendix-b | v0.2.0 | PASS |
+| `0007-rfc8785-key-sorting-stress` | rfc8785-appendix-b | v0.2.0 | PASS |
+| `0008-x402-2357-shared-fixture` | crest-interop | [#2357](https://github.com/x402-foundation/x402/issues/2357) | PASS |
+| `0009-field-name-load-bearing` | crest-adversarial | v0.3.0 | FAIL (by design) |
 
 See [CONFORMANCE_INTAKE.md](CONFORMANCE_INTAKE.md) for submission format and publication policy.
 

@@ -15,13 +15,35 @@ import { readFileSync } from "fs";
 import canonicalize from "./vendor/canonicalize.mjs";
 
 function deriveActionRef(preimage) {
-  const { agent_id, action_type, scope, timestamp } = preimage;
-  if (!agent_id || !action_type || !scope || !timestamp) {
-    return { error: "Missing required preimage fields: agent_id, action_type, scope, timestamp" };
+  const { agent_id, action_type, scope } = preimage;
+  const hasTimestamp = Object.prototype.hasOwnProperty.call(preimage, "timestamp");
+  const hasTimestampMs = Object.prototype.hasOwnProperty.call(preimage, "timestamp_ms");
+
+  if (!agent_id || !action_type || !scope) {
+    return { error: "Missing required preimage fields: agent_id, action_type, scope" };
   }
-  const obj = { action_type, agent_id, scope, timestamp };
+  if (hasTimestamp && hasTimestampMs) {
+    return { error: "Ambiguous: both timestamp and timestamp_ms present. Provide one." };
+  }
+  if (!hasTimestamp && !hasTimestampMs) {
+    return { error: "Missing required preimage field: timestamp or timestamp_ms" };
+  }
+
+  if (hasTimestampMs) {
+    if (!Number.isInteger(preimage.timestamp_ms) || !Number.isSafeInteger(preimage.timestamp_ms)) {
+      return { error: "timestamp_ms must be a safe integer (epoch milliseconds)" };
+    }
+    const obj = { action_type, agent_id, scope, timestamp_ms: preimage.timestamp_ms };
+    const jcs = canonicalize(obj);
+    return { hash: createHash("sha256").update(jcs, "utf8").digest("hex"), canonical: jcs, encoding: "epoch_ms" };
+  }
+
+  if (typeof preimage.timestamp !== "string") {
+    return { error: "timestamp must be an RFC 3339 string" };
+  }
+  const obj = { action_type, agent_id, scope, timestamp: preimage.timestamp };
   const jcs = canonicalize(obj);
-  return { hash: createHash("sha256").update(jcs, "utf8").digest("hex"), canonical: jcs };
+  return { hash: createHash("sha256").update(jcs, "utf8").digest("hex"), canonical: jcs, encoding: "rfc3339" };
 }
 
 function verify(fixture) {

@@ -1,0 +1,16 @@
+{
+  "name": "x402-2357-shared-fixture",
+  "implementation": "crest-interop",
+  "version": "v0.3.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "10d8a38c01d8672176aa6e5209a368fde3e1831640d69e15283142b35880c2c1",
+  "payment_hash": "2ed186ebc66947eaac6a05a88c7bc096ee07ac11a2c44bb5580bd72b3670f580",
+  "preimage": {
+    "action_type": "sanctions_screen",
+    "agent_id": "did:web:agent-7.example.com",
+    "scope": "counterparty-due-diligence",
+    "timestamp_ms": 1747728000000
+  },
+  "notes": "Three-way interop vector from x402-foundation/x402#2357. Shared payment_hash and action_ref bind Axis 1 (seritalien/zkpay STARK), Axis 2 (feedoracle hybrid-PQC ES256K+ML-DSA-65), and Axis 3 (this harness). Uses timestamp_ms (epoch integer) per the original #2332 preimage spec. JCS canonicalization (RFC 8785) produces identical bytes across Node.js, Python, and Rust runtimes."
+}

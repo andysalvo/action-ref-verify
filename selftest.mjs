@@ -32,10 +32,38 @@ if (hash !== CANARY.expected_hash) {
   failures++;
 }
 
+const CANARY_MS = {
+  input: {
+    action_type: "sanctions_screen",
+    agent_id: "did:web:agent-7.example.com",
+    scope: "counterparty-due-diligence",
+    timestamp_ms: 1747728000000
+  },
+  expected_canonical: '{"action_type":"sanctions_screen","agent_id":"did:web:agent-7.example.com","scope":"counterparty-due-diligence","timestamp_ms":1747728000000}',
+  expected_hash: "10d8a38c01d8672176aa6e5209a368fde3e1831640d69e15283142b35880c2c1"
+};
+
+const jcsMs = canonicalize(CANARY_MS.input);
+const hashMs = createHash("sha256").update(jcsMs, "utf8").digest("hex");
+
+if (jcsMs !== CANARY_MS.expected_canonical) {
+  console.error("CANARY_MS FAIL: canonical bytes diverged");
+  console.error("  expected:", CANARY_MS.expected_canonical);
+  console.error("  got:     ", jcsMs);
+  failures++;
+}
+
+if (hashMs !== CANARY_MS.expected_hash) {
+  console.error("CANARY_MS FAIL: hash diverged");
+  console.error("  expected:", CANARY_MS.expected_hash);
+  console.error("  got:     ", hashMs);
+  failures++;
+}
+
 if (failures > 0) {
   console.error(`\nSELFTEST FAILED (${failures} failures). Verifier is not safe to use.`);
   process.exit(1);
 }
 
-console.log("SELFTEST PASS: canonicalize + SHA-256 canary verified");
+console.log("SELFTEST PASS: both canaries verified (rfc3339 + epoch_ms)");
 process.exit(0);

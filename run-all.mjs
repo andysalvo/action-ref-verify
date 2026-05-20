@@ -9,16 +9,19 @@ const files = readdirSync(vectorDir).filter(f => f.endsWith(".json")).sort();
 let total = 0, conformant = 0, nonconformant = 0;
 
 console.log("ACTION-REF CONFORMANCE REPORT");
-console.log(`Harness: action-ref-verify v0.2.0`);
+console.log(`Harness: action-ref-verify v0.3.0`);
 console.log(`Date: ${new Date().toISOString()}`);
 console.log("=".repeat(72));
 console.log();
 
 for (const file of files) {
   const fixture = JSON.parse(readFileSync(new URL(file, vectorDir), "utf-8"));
-  const { action_type, agent_id, scope, timestamp } = fixture.preimage;
+  const { action_type, agent_id, scope } = fixture.preimage;
+  const hasTimestampMs = Object.prototype.hasOwnProperty.call(fixture.preimage, "timestamp_ms");
 
-  const obj = { action_type, agent_id, scope, timestamp };
+  const obj = hasTimestampMs
+    ? { action_type, agent_id, scope, timestamp_ms: fixture.preimage.timestamp_ms }
+    : { action_type, agent_id, scope, timestamp: fixture.preimage.timestamp };
   const jcs = canonicalize(obj);
   const computed = createHash("sha256").update(jcs, "utf8").digest("hex");
   const claimed = (fixture.action_ref || "").replace(/^0x/, "");
