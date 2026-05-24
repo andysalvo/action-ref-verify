@@ -1,0 +1,16 @@
+{
+  "name": "unicode-nfd-divergence",
+  "implementation": "vauban-proposed",
+  "version": "v0.3.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "PASS",
+  "action_ref": "24d6bd1693f44c42f69ed395df20f1fbc7c6d933cd1774077909d3a88dea59f7",
+  "expected_divergent_digest": "5c77595817951a1725a1fdf5708fd7bb3d82b74a3200ba99e67cf3bfca8e1416",
+  "preimage": {
+    "action_type": "sanctions_screen",
+    "agent_id": "did:web:agent-é.example.com",
+    "scope": "counterparty-due-diligence",
+    "timestamp_ms": 1747728000000
+  },
+  "notes": "Proposed by seritalien (Vauban Pay). RFC 8785 performs no Unicode normalization. The e-acute character can be encoded two ways: NFC pre-composed (U+00E9, 2 UTF-8 bytes c3 a9) producing digest 24d6bd16..., or NFD decomposed (e + U+0301, 3 UTF-8 bytes 65 cc 81) producing digest 5c775958.... This vector uses NFC. Real-world sources (macOS HFS+, some databases) silently normalize, which would change the digest."
+}

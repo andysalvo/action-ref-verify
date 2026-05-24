@@ -1,0 +1,14 @@
+{
+  "name": "required-field-missing",
+  "implementation": "vauban-proposed",
+  "version": "v0.3.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "FAIL",
+  "action_ref": "10d8a38c01d8672176aa6e5209a368fde3e1831640d69e15283142b35880c2c1",
+  "preimage": {
+    "action_type": "sanctions_screen",
+    "scope": "counterparty-due-diligence",
+    "timestamp_ms": 1747728000000
+  },
+  "notes": "Proposed by seritalien (Vauban Pay). agent_id is absent from the preimage. JCS canonicalizes any well-formed JSON without schema validation, producing a valid but meaningless digest (2c0b5100...). The digest does not match the baseline because the canonical output differs. Verifiers MUST require presence of all canonical fields before canonicalization."
+}

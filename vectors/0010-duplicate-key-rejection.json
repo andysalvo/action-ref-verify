@@ -1,0 +1,15 @@
+{
+  "name": "duplicate-key-rejection",
+  "implementation": "vauban-proposed",
+  "version": "v0.3.0",
+  "spec": "action-ref-v1-jcs-sha256",
+  "expected_result": "FAIL",
+  "action_ref": "10d8a38c01d8672176aa6e5209a368fde3e1831640d69e15283142b35880c2c1",
+  "preimage": {
+    "action_type": "sanctions_screen",
+    "agent_id": "did:web:agent-a.example.com",
+    "scope": "counterparty-due-diligence",
+    "timestamp_ms": 1747728000000
+  },
+  "notes": "Proposed by seritalien (Vauban Pay). JSON RFC 8259 Section 4 admits duplicate keys with parser-dependent behavior. Last-wins vs first-wins produce different canonical bytes. This vector uses agent_id 'agent-a' which differs from the baseline 'agent-7', so the digest does not match. Verifiers MUST reject duplicate-key inputs at parse before canonicalization. The raw duplicate-key input (not representable in standard JSON) would be: agent_id appears twice with values agent-a and agent-b."
+}
