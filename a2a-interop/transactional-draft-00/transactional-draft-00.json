@@ -1,0 +1,338 @@
+{
+  "suite_id": "transactional-claim-type-draft-00",
+  "title": "Transactional claim_type conformance suite (DRAFT)",
+  "version": "draft-00",
+  "status": "CANDIDATE -- submitted for v0.4 review",
+  "author": "Andy Salvo / Crest Deployment Systems LLC",
+  "url": "https://verify.crestsystems.ai",
+  "spec_ref": "A2A v0.4 evidence-envelope transactional claim_type",
+  "derivation": "action_ref = SHA-256(JCS(preimage))",
+  "canon_version": "jcs-rfc8785-v1",
+  "generated_at": "2026-05-25T20:40:57.366232+00:00",
+  "vectors_total": 14,
+  "categories": {
+    "positive": 5,
+    "stability": 1,
+    "adversarial": 8
+  },
+  "pair_invariants": [
+    {
+      "pair": [
+        "tx-001",
+        "tx-006"
+      ],
+      "invariant": "MUST_MATCH",
+      "notes": "Stability: identical preimage must produce identical hash"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-007"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Timestamp precision: 1ms offset must change hash"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-008"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Agent replay: different agent_id must change hash"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-009"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Field injection: extra field must change hash"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-010"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Empty string: empty agent_id is not the same as the real one"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-011"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Null handling: explicit null field changes the canonical form"
+    },
+    {
+      "pair": [
+        "tx-001",
+        "tx-012"
+      ],
+      "invariant": "MUST_DIFFER",
+      "notes": "Nested object: evidence object changes the canonical form"
+    }
+  ],
+  "vectors": [
+    {
+      "vector_id": "tx-001",
+      "name": "transactional-claim-issuance",
+      "category": "positive",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "4a83aae9adf192c1155cc8da896a5be87dd3d787be8353bde2ed064f425c9322",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "Baseline transactional claim at issuance. All required fields present."
+    },
+    {
+      "vector_id": "tx-002",
+      "name": "transactional-claim-verification",
+      "category": "positive",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "4a625c7d71ddcf1d696d659582a9f2d5bcfa956eb02f651f1a0b2af4763c7e5d",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "arbiter_id": "did:web:car-arbiter.example.com",
+        "claim_type": "transactional",
+        "scope": "verification",
+        "timestamp_ms": 1748000060000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"arbiter_id\":\"did:web:car-arbiter.example.com\",\"claim_type\":\"transactional\",\"scope\":\"verification\",\"timestamp_ms\":1748000060000}",
+      "notes": "Arbiter verifies claim. Additional arbiter_id field sorted correctly by JCS."
+    },
+    {
+      "vector_id": "tx-003",
+      "name": "transactional-claim-execution",
+      "category": "positive",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "b020ac26ab6fac8f6739cccc8c67494a7cdf0856d45cd0b1f8356c475daeb189",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "execution_ref": "sha256:abc123def456",
+        "scope": "execution",
+        "timestamp_ms": 1748000120000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"execution_ref\":\"sha256:abc123def456\",\"scope\":\"execution\",\"timestamp_ms\":1748000120000}",
+      "notes": "Claim executed. Includes execution_ref binding the action to external proof."
+    },
+    {
+      "vector_id": "tx-004",
+      "name": "transactional-claim-revocation",
+      "category": "positive",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "d8a9d35b33b299c029ef0aee0cf782085c33ed9eb3d11cfb479d7e1a5eceeb37",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "reason": "policy_violation",
+        "scope": "revocation",
+        "timestamp_ms": 1748000180000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"reason\":\"policy_violation\",\"scope\":\"revocation\",\"timestamp_ms\":1748000180000}",
+      "notes": "Claim revoked with reason field. JCS sorts reason before scope."
+    },
+    {
+      "vector_id": "tx-005",
+      "name": "transactional-claim-settlement",
+      "category": "positive",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "f3215e1b522e7bb47da0cb6652e91a1593a966cc1c942248f4fef7b911e5f240",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "amount_minor_units": 1050,
+        "claim_type": "transactional",
+        "currency": "USDC",
+        "payment_hash": "sha256:fedcba9876543210",
+        "scope": "settlement",
+        "timestamp_ms": 1748000240000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"amount_minor_units\":1050,\"claim_type\":\"transactional\",\"currency\":\"USDC\",\"payment_hash\":\"sha256:fedcba9876543210\",\"scope\":\"settlement\",\"timestamp_ms\":1748000240000}",
+      "notes": "Settlement with payment_hash and amount. Tests numeric (integer) JCS handling."
+    },
+    {
+      "vector_id": "tx-006",
+      "name": "stability-issuance-replay",
+      "category": "stability",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "4a83aae9adf192c1155cc8da896a5be87dd3d787be8353bde2ed064f425c9322",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "Identical preimage to tx-001. Hash MUST match exactly. Tests determinism across independent computations."
+    },
+    {
+      "vector_id": "tx-007",
+      "name": "adversarial-timestamp-1ms",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "418a830f161370314ea1b2b9e8473780e5b3c2fbcd0083ffd16b818452c7e4f6",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000001
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000001}",
+      "notes": "ADVERSARIAL: 1ms offset from tx-001. Hash MUST differ. Tests millisecond precision preservation under JCS integer serialization."
+    },
+    {
+      "vector_id": "tx-008",
+      "name": "adversarial-agent-replay",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "42ea1a4d811dbce4e958f6e0b6456ae02b108dc7ba56b472813bc3215c8ce313",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os-replica.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os-replica.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Different agent_id, same claim. Hash MUST differ. Tests replay detection across agents."
+    },
+    {
+      "vector_id": "tx-009",
+      "name": "adversarial-extra-field",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "d139109207d5efe5dd423c2448289e4dd93c60d4bc240a354b71e7b153f98afb",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "injected_field": "malicious_data",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"injected_field\":\"malicious_data\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Extra field injected. Hash MUST differ from tx-001. Tests that JCS includes ALL fields in canonical form."
+    },
+    {
+      "vector_id": "tx-010",
+      "name": "adversarial-empty-agent-id",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "e41cbea5f8a233037e42d74a5d07705e8299a13f54ae93d955061c76732f717c",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Empty string agent_id. Hash MUST differ from tx-001. Tests that empty string is not equivalent to missing field."
+    },
+    {
+      "vector_id": "tx-011",
+      "name": "adversarial-null-field",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "6b45afbb78752d5f75fdc8b8bdfdbd29189dd71cd87e850d3c4ce25629581ea5",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "supplementary": null,
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"supplementary\":null,\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Explicit null field. JCS serializes null as 'null'. Hash MUST differ from tx-001."
+    },
+    {
+      "vector_id": "tx-012",
+      "name": "adversarial-nested-object",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "MUST_DIFFER_FROM_tx-001",
+      "action_ref": "0d92d5fb3b789bc47195430215c9438b0d01d19e4405591e9fd63418401d5204",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "evidence": {
+          "confidence": 0.95,
+          "source": "supership_index"
+        },
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"evidence\":{\"confidence\":0.95,\"source\":\"supership_index\"},\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Nested evidence object. JCS must recursively sort inner keys. Tests deep canonicalization."
+    },
+    {
+      "vector_id": "tx-013",
+      "name": "adversarial-float-precision",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "bd29d0857f4c3b5e2dbf18d6c3b820e5bcb5d18ab31778ff99b79a406db0cf4c",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "confidence": 0.9500000000000001,
+        "scope": "issuance",
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"confidence\":0.9500000000000001,\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+      "notes": "ADVERSARIAL: Float with trailing precision noise. JCS must serialize per ES2015 Number rules. Tests cross-language float handling."
+    },
+    {
+      "vector_id": "tx-014",
+      "name": "adversarial-array-order",
+      "category": "adversarial",
+      "claim_type": "transactional",
+      "expected_result": "PASS",
+      "action_ref": "b8e139d71fff2398b480b64155482190bfee7373d7e623ff92b69d28fb6b800a",
+      "preimage": {
+        "action_type": "committed_claim",
+        "agent_id": "did:web:agent-os.example.com",
+        "claim_type": "transactional",
+        "scope": "issuance",
+        "tags": [
+          "compliance",
+          "audit",
+          "real-time"
+        ],
+        "timestamp_ms": 1748000000000
+      },
+      "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"claim_type\":\"transactional\",\"scope\":\"issuance\",\"tags\":[\"compliance\",\"audit\",\"real-time\"],\"timestamp_ms\":1748000000000}",
+      "notes": "Array order is preserved by JCS (not sorted). Implementations that sort array elements will produce a different hash."
+    }
+  ],
+  "integrity": {
+    "suite_ref": "052aec1e15be0ddb95f7494c90c15edb4bd46c3d720dfa442f9d0586ae80e038",
+    "canon_method": "jcs-rfc8785"
+  }
+}
