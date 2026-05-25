@@ -1,0 +1,124 @@
+[
+  {
+    "name": "committed-claim-issuance",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "issuance",
+    "expected_result": "PASS",
+    "action_ref": "13fceccaf409d2914372e902b20aca36b3a548fa3a379a29f807b73e7159948c",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "issuance",
+      "timestamp_ms": 1748000000000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+    "notes": "COMMITTED Claim lifecycle: issuance state. Agent OS Claim engine (8715) compatibility test."
+  },
+  {
+    "name": "committed-claim-verification",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "verification",
+    "expected_result": "PASS",
+    "action_ref": "5d9154cb97ca504c2f210c143507a4fdede8153e9a1de49a0f8d4c5b75a03ec3",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "verification",
+      "timestamp_ms": 1748000060000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"verification\",\"timestamp_ms\":1748000060000}",
+    "notes": "COMMITTED Claim lifecycle: verification state. CAR arbiter (8716) validates the claim."
+  },
+  {
+    "name": "committed-claim-execution",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "execution",
+    "expected_result": "PASS",
+    "action_ref": "1c985e44fda2b224b1eac738c78a856b481079854305888d08ff4a9526e6641e",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "execution",
+      "timestamp_ms": 1748000120000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"execution\",\"timestamp_ms\":1748000120000}",
+    "notes": "COMMITTED Claim lifecycle: execution state. Claim is acted upon."
+  },
+  {
+    "name": "committed-claim-revocation",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "revocation",
+    "expected_result": "PASS",
+    "action_ref": "b0fdceff9907e63034ba3af33cb32e86a85aa2e8868e568448346c15ffde7221",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "revocation",
+      "timestamp_ms": 1748000180000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"revocation\",\"timestamp_ms\":1748000180000}",
+    "notes": "COMMITTED Claim lifecycle: revocation state. Claim is revoked."
+  },
+  {
+    "name": "lifecycle-stability-check",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "stability",
+    "expected_result": "PASS",
+    "action_ref": "13fceccaf409d2914372e902b20aca36b3a548fa3a379a29f807b73e7159948c",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "issuance",
+      "timestamp_ms": 1748000000000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+    "notes": "Identical preimage to issuance vector. Action_ref MUST match exactly. Tests hash stability across independent computations."
+  },
+  {
+    "name": "timestamp-ms-1ms-precision",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "adversarial",
+    "expected_result": "PASS",
+    "action_ref": "2fb4e48ca6ed676af5219a126d6cb0263dd12eff9737a9b3e10061305327e822",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os.example.com",
+      "scope": "issuance",
+      "timestamp_ms": 1748000000001
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os.example.com\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000001}",
+    "notes": "ADVERSARIAL: 1ms offset from issuance vector. Action_ref MUST differ. Tests millisecond precision preservation."
+  },
+  {
+    "name": "replay-different-agent",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "adversarial",
+    "expected_result": "PASS",
+    "action_ref": "c48f5396d8036c9467a2bb6bcdfd322766313b5c2d9cd2db79d5627ff499aa45",
+    "preimage": {
+      "action_type": "committed_claim",
+      "agent_id": "did:web:agent-os-replica.example.com",
+      "scope": "issuance",
+      "timestamp_ms": 1748000000000
+    },
+    "canonical_jcs": "{\"action_type\":\"committed_claim\",\"agent_id\":\"did:web:agent-os-replica.example.com\",\"scope\":\"issuance\",\"timestamp_ms\":1748000000000}",
+    "notes": "ADVERSARIAL: Same claim, scope, timestamp -- different agent_id. Action_ref MUST differ. Tests replay detection across agents."
+  },
+  {
+    "name": "dual-timestamp-envelope",
+    "spec": "action-ref-v1-jcs-sha256",
+    "lifecycle_state": "envelope",
+    "expected_result": "PASS",
+    "action_ref": "e7621ab2387da38a6d7a4318b76f73555c0e7a2947cab26a6b82059956aef0a9",
+    "preimage": {
+      "action_type": "authority_check",
+      "agent_id": "did:web:agent-os.example.com",
+      "authority_verified_at_ms": 1748000000000,
+      "revocation_check_at_ms": 1748000060000,
+      "scope": "committed_claim",
+      "timestamp_ms": 1748000000000
+    },
+    "canonical_jcs": "{\"action_type\":\"authority_check\",\"agent_id\":\"did:web:agent-os.example.com\",\"authority_verified_at_ms\":1748000000000,\"revocation_check_at_ms\":1748000060000,\"scope\":\"committed_claim\",\"timestamp_ms\":1748000000000}",
+    "notes": "Tests the dual-timestamp pattern (authority_verified_at_ms / revocation_check_at_ms) from action-ref.md. All fields in the preimage, JCS-sorted."
+  }
+]
