@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Crest Gap Class Verifier v0.1
+Crest Gap Class Verifier v0.2
 
 Verifies A2A #1734 v2 gap class commit-hash claims.
+Supports single-commit and multi-commit (per-field citation) claims.
 
 Scope (what this verifies):
 - Commit exists in the claimed repository
@@ -17,8 +18,11 @@ Scope (what this does NOT verify):
 - Legal or regulatory compliance
 
 Usage:
-  python3 scripts/gap-verifier.py claim.json
-  python3 scripts/gap-verifier.py --inline '{"repo":"owner/repo","commit":"abc123","path":"file.md","contains":"some text"}'
+  # Single commit
+  python3 gap-verifier.py --inline '{"repo":"owner/repo","commit":"abc123","path":"file.md","contains":"text"}'
+
+  # Multi-commit (per-field citations)
+  python3 gap-verifier.py --inline '{"repo":"owner/repo","files":[{"commit":"abc123","path":"file.md","contains":"text","field":"base spec"},{"commit":"def456","path":"file2.md","contains":"other","field":"new field"}]}'
 """
 
 import json
@@ -219,10 +223,79 @@ def verify_claim(claim):
     return receipt
 
 
+def verify_multi_commit(claim):
+    """Verify a multi-commit claim with per-field commit citations."""
+    repo = claim.get("repo", "")
+    files = claim.get("files", [])
+
+    results = {
+        "receipt_schema": "crest.a2a1734.gap_verification_receipt.v2",
+        "verifier": {
+            "name": "crest-gap-verifier",
+            "version": "0.2.0",
+            "url": "https://verify.crestsystems.ai",
+            "policy": "fail-closed, content-only, no semantic claims"
+        },
+        "claim": claim,
+        "file_checks": [],
+        "warnings": [],
+        "errors": [],
+        "conflict_disclosure": "Crest is cited as a canon_version adopter in gap class 4.",
+        "explicit_non_claims": [
+            "This receipt does not verify runtime behavior",
+            "This receipt does not establish authorship priority",
+            "This receipt does not validate semantic correctness",
+            "Each file is verified at its cited commit independently"
+        ],
+        "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "receipt_ref": None
+    }
+
+    for entry in files:
+        sub_claim = {
+            "repo": repo,
+            "commit": entry.get("commit", ""),
+            "path": entry.get("path", ""),
+            "contains": entry.get("contains"),
+            "derivation": entry.get("derivation"),
+            "field": entry.get("field", "")
+        }
+        sub_receipt = verify_claim(sub_claim)
+        results["file_checks"].append({
+            "path": entry.get("path"),
+            "commit": entry.get("commit"),
+            "field": entry.get("field", ""),
+            "status": sub_receipt["status"],
+            "checks": sub_receipt["checks"],
+            "warnings": sub_receipt.get("warnings", []),
+            "errors": sub_receipt.get("errors", [])
+        })
+        results["warnings"].extend(sub_receipt.get("warnings", []))
+        results["errors"].extend(sub_receipt.get("errors", []))
+
+    statuses = [fc["status"] for fc in results["file_checks"]]
+    if "fail" in statuses:
+        results["overall_status"] = "fail"
+    elif all("pass" in s for s in statuses):
+        results["overall_status"] = "pass"
+    else:
+        results["overall_status"] = "partial"
+
+    passed = sum(1 for s in statuses if "pass" in s)
+    results["summary"] = f"{passed}/{len(statuses)} files verified across {len(set(e.get('commit','') for e in files))} commits"
+
+    canonical = jcs(results)
+    results["receipt_ref"] = "sha256:" + sha256_hex(canonical)
+
+    return results
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python3 gap-verifier.py claim.json")
         print("       python3 gap-verifier.py --inline '{...}'")
+        print("  Single: {repo, commit, path, contains}")
+        print("  Multi:  {repo, files: [{commit, path, contains, field}, ...]}")
         sys.exit(1)
 
     if sys.argv[1] == "--inline":
@@ -231,11 +304,15 @@ def main():
         with open(sys.argv[1]) as f:
             claim = json.load(f)
 
-    receipt = verify_claim(claim)
+    if "files" in claim:
+        receipt = verify_multi_commit(claim)
+    else:
+        receipt = verify_claim(claim)
 
     print(json.dumps(receipt, indent=2))
 
-    if receipt["status"] in ("pass", "pass_with_warnings"):
+    status = receipt.get("overall_status", receipt.get("status", "fail"))
+    if "pass" in status:
         sys.exit(0)
     else:
         sys.exit(1)
